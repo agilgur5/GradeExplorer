@@ -1,0 +1,10 @@
+frontend:
+  build: .
+  # avoid syncing node_modules by mounting everything separately
+  volumes:
+    - ./build:/code/build # create if non-existent
+    - ./css:/code/css
+    - ./images:/code/images
+    - ./js:/code/js
+    - ./package.json:/code/package.json
+    - ./webpack.config.js:/code/webpack.config.js
