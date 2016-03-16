@@ -13,6 +13,9 @@ class Axis extends React.Component {
     let axis = d3.svg.axis()
       .scale(this.props.scale)
       .orient(this.props.orient)
+      .outerTickSize(this.props.outerTickSize)
+      .innerTickSize(this.props.innerTickSize)
+      .tickPadding(this.props.tickPadding)
     d3.select(node).call(axis)
   }
   render() {

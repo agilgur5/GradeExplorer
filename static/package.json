@@ -25,6 +25,7 @@
     "postcss-import": "^7.1.0",
     "postcss-loader": "^0.7.0",
     "rucksack-css": "^0.8.5",
+    "shortid": "^2.2.4",
     "standard": "^5.3.1",
     "style-loader": "^0.13.0",
     "webpack": "^1.12.2"

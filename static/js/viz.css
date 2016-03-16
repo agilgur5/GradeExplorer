@@ -9,6 +9,9 @@ body {
 }
 .line {
   fill: none;
-  stroke: steelblue;
+  stroke: #6EABEE;
   stroke-width: 1.5px;
+}
+.area {
+  fill: #6EABEE;
 }
