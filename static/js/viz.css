@@ -7,11 +7,24 @@ body {
   stroke: #000;
   shape-rendering: crispEdges;
 }
-.line {
+.stroke {
   fill: none;
   stroke: #6EABEE;
   stroke-width: 1.5px;
 }
-.area {
+.fill {
   fill: #6EABEE;
+}
+.highlightText {
+  color: #66A4E6
+}
+.performanceContainer {
+  float: left;
+}
+.circlesContainer {
+  display: block;
+}
+.trendsContainer {
+  clear: both;
+  display: block;
 }

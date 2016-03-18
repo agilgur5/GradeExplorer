@@ -9,16 +9,18 @@ class HighlightedGraph extends React.Component {
     height: React.PropTypes.number,
     margin: React.PropTypes.object,
     data: React.PropTypes.array,
-    interpolation: React.PropTypes.oneOfType([
+    interp: React.PropTypes.oneOfType([
       React.PropTypes.string,
       React.PropTypes.function
-    ])
-  };
-
+    ]),
+    input: React.PropTypes.number,
+    clipId: React.PropTypes.string
+  }
+  static defaultProps = {clipId: shortid.generate()}
   render () {
-    const {width, height, margin, finalGrades, interp, input} = this.props
-    const minGrade = d3.min(finalGrades)
-    const maxGrade = d3.max(finalGrades)
+    const {width, height, margin, grades, interp, input, clipId} = this.props
+    const minGrade = d3.min(grades)
+    const maxGrade = d3.max(grades)
     const padding = 5
 
     const xTrans = d3.scale.linear()
@@ -28,7 +30,7 @@ class HighlightedGraph extends React.Component {
     // generate a histogram using uniformly-spaced bins.
     const data = d3.layout.histogram()
       .bins(xTrans.ticks((maxGrade - minGrade)))
-      (finalGrades)
+      (grades)
     console.log(data)
 
     const yTrans = d3.scale.linear()
@@ -58,18 +60,20 @@ class HighlightedGraph extends React.Component {
     let leftPercent = 0
     let rightPercent = 0
     
+    console.log(data[maxInd].x)
+    console.log(data[maxInd].dx)
     // if lower than or at lowest bucket
-    if (input < data[0].x + data[0].dx) {
+    if (input <= data[0].x + data[0].dx) {
       currBucketInd = 0
       currPercent = data[0].y
-      leftPercent = 0
-      rightPercent = 100 - currPercent
+      leftPercent = 1
+      rightPercent = 99 - currPercent
     // if higher than or at highest bucket
-    } else if (input > data[maxInd].x - data[maxInd].dx) {
+    } else if (input >= data[maxInd].x) {
       currBucketInd = maxInd
       currPercent = data[maxInd].y
-      rightPercent = 0
-      leftPercent = 100 - currPercent
+      rightPercent = 1
+      leftPercent = 99 - currPercent
     // somewhere in the middle
     } else {
       currBucketInd = 1
@@ -85,15 +89,12 @@ class HighlightedGraph extends React.Component {
     console.log(rightPercent)
 
     // first x in this bucket (left limit)
-    const curveLeftX = xTrans(data[currBucketInd - 1].x)
+    const curveLeftX = xTrans(data[currBucketInd].x - data[currBucketInd].dx)
     // width of bucket (right limit)
-    const bucketWidth = xTrans(data[currBucketInd - 1].dx)
-    const curveRightX = xTrans(data[currBucketInd - 1].x + data[currBucketInd -1].dx)
+    const bucketWidth = xTrans(data[currBucketInd].dx)
+    const curveRightX = xTrans(data[currBucketInd].x)
 
-    const clipId = shortid.generate()
-
-
-    return <div>
+    return <div className='performanceContainer'>
         <svg width={width + margin.left + margin.right}
         height={height + margin.top + margin.bottom}>
         <defs>
@@ -105,24 +106,26 @@ class HighlightedGraph extends React.Component {
         </defs>
         <g transform={'translate(' + margin.left + ',' + margin.top + ')'}>
           {/* plot axes */}
-          <Axis className='x axis' transform={'translate(0,' + height + ')'}
+          <Axis className='axis' transform={'translate(0,' + height + ')'}
             scale={xTrans} orient='bottom' outerTickSize={0} innerTickSize={0}
             tickPadding={5} />
-          <Axis className='y axis' scale={yTrans} orient='left'
+          <Axis className='axis' scale={yTrans} orient='left'
             outerTickSize={0} innerTickSize={0} tickPadding={5} />
           {/* the curve */}
-          <path className='line' d={lineFunc(data)} />
+          <path className='stroke' d={lineFunc(data)} />
           {/* the highlighted area beneath the curve, clipped */}
-          <path className='area' d={areaFunc(data)}
+          <path className='fill' d={areaFunc(data)}
            clipPath={'url(#' + clipId + ')'} />
         </g>
       </svg>
-      <svg width={width + margin.left + margin.right}
+      <svg className='circlesContainer' width={width + margin.left + margin.right}
         height={height + margin.top + margin.bottom}>
-        {/* 3 circles */}
-        <circle className='area' cy={height/2} cx={leftPercent} r={leftPercent} />
-        <circle className='area' cy={height/2} cx={leftPercent*2+currPercent} r={currPercent} />
-        <circle className='area' cy={height/2} cx={leftPercent*2+currPercent*2+rightPercent} r={rightPercent} />
+        <g transform={'translate(' + margin.left + ',' + margin.top + ')'}>
+          {/* 3 circles */}
+          <circle className='fill' cy={height/2} cx={height/2*0.01*leftPercent} r={height/2 * 0.01 * leftPercent} />
+          <circle className='fill' cy={height/2} cx={height/2*0.01*(leftPercent*2+currPercent)} r={height/2*0.01*currPercent} />
+          <circle className='fill' cy={height/2} cx={height/2*0.01*(leftPercent*2+currPercent*2+rightPercent)} r={height/2*0.01*rightPercent} />
+        </g>
       </svg>
     </div>
   }
