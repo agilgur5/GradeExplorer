@@ -31,7 +31,6 @@ class HighlightedGraph extends React.Component {
     const data = d3.layout.histogram()
       .bins(xTrans.ticks((maxGrade - minGrade)))
       (grades)
-    console.log(data)
 
     const yTrans = d3.scale.linear()
       .domain([0, d3.max(data, (d) => d.y)])
@@ -60,8 +59,6 @@ class HighlightedGraph extends React.Component {
     let leftPercent = 0
     let rightPercent = 0
     
-    console.log(data[maxInd].x)
-    console.log(data[maxInd].dx)
     // if lower than or at lowest bucket
     if (input <= data[0].x + data[0].dx) {
       currBucketInd = 0
@@ -84,9 +81,6 @@ class HighlightedGraph extends React.Component {
       currPercent = data[currBucketInd].y
       rightPercent = 100 - leftPercent - currPercent
     }
-    console.log(leftPercent)
-    console.log(currPercent)
-    console.log(rightPercent)
 
     // first x in this bucket (left limit)
     const curveLeftX = xTrans(data[currBucketInd].x - data[currBucketInd].dx)
@@ -108,9 +102,11 @@ class HighlightedGraph extends React.Component {
           {/* plot axes */}
           <Axis className='axis' transform={'translate(0,' + height + ')'}
             scale={xTrans} orient='bottom' outerTickSize={0} innerTickSize={0}
-            tickPadding={5} />
+            tickPadding={5} label='Students' width={width} height={height}
+            margin={margin} />
           <Axis className='axis' scale={yTrans} orient='left'
-            outerTickSize={0} innerTickSize={0} tickPadding={5} />
+            outerTickSize={0} innerTickSize={0} tickPadding={5} label='Grades'
+            width={width} height={height} margin={margin} />
           {/* the curve */}
           <path className='stroke' d={lineFunc(data)} />
           {/* the highlighted area beneath the curve, clipped */}
@@ -123,8 +119,11 @@ class HighlightedGraph extends React.Component {
         <g transform={'translate(' + margin.left + ',' + margin.top + ')'}>
           {/* 3 circles */}
           <circle className='fill' cy={height/2} cx={height/2*0.01*leftPercent} r={height/2 * 0.01 * leftPercent} />
+          <text className='highlightText' y={height + margin.bottom} x={height/2*0.01*leftPercent}>{leftPercent}</text>
           <circle className='fill' cy={height/2} cx={height/2*0.01*(leftPercent*2+currPercent)} r={height/2*0.01*currPercent} />
+          <text className='highlightText' y={height + margin.bottom} x={height/2*0.01*(leftPercent*2+currPercent)}>{currPercent}</text>
           <circle className='fill' cy={height/2} cx={height/2*0.01*(leftPercent*2+currPercent*2+rightPercent)} r={height/2*0.01*rightPercent} />
+          <text className='highlightText' y={height + margin.bottom} x={height/2*0.01*(leftPercent*2+currPercent*2+rightPercent)}>{rightPercent}</text>
         </g>
       </svg>
     </div>

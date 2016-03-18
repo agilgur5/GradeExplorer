@@ -10,4 +10,5 @@ const width = 960 - margin.left - margin.right
 const height = 500 - margin.top - margin.bottom
 
 ReactDOM.render(<TopLevelApp width={width} height={height} margin={margin}
-    data={normalGrades.data} />, document.getElementById('d3_body'))
+  data={normalGrades.data} weights={normalGrades.weights} />,
+  document.getElementById('d3_body'))

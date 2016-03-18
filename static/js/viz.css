@@ -16,7 +16,7 @@ body {
   fill: #6EABEE;
 }
 .highlightText {
-  color: #66A4E6
+  fill: #66A4E6
 }
 .performanceContainer {
   float: left;
@@ -24,7 +24,18 @@ body {
 .circlesContainer {
   display: block;
 }
+.arcsContainer {
+  display: block;
+  float: left;
+}
 .trendsContainer {
   clear: both;
   display: block;
+  /*margin: auto;*/
+}
+.axisLabel {
+
+}
+.backgroundArc {
+  fill: #DDD;
 }

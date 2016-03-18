@@ -30,9 +30,11 @@ class TrendPlot extends React.Component {
         {/* plot axes */}
         <Axis className='axis' transform={'translate(0,' + height + ')'}
           scale={xTrans} orient='bottom' ticks={data[0].length}
-          outerTickSize={0} innerTickSize={0} tickPadding={5} />
+          outerTickSize={0} innerTickSize={0} tickPadding={5} label='Assignment #'
+          width={width} height={height} margin={margin} />
         <Axis className='axis' scale={yTrans} orient='left'
-          outerTickSize={0} innerTickSize={0} tickPadding={5} />
+          outerTickSize={0} innerTickSize={0} tickPadding={5} label='Grades' 
+          width={width} height={height} margin={margin} />
         {/* the lines */}
         {data.map((student, index) =>
           <path key={index} className='stroke' d={lineFunc.x((d) => xTrans(student.indexOf(d)+1))(student)} />
