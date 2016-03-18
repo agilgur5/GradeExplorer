@@ -102,10 +102,10 @@ class HighlightedGraph extends React.Component {
           {/* plot axes */}
           <Axis className='axis' transform={'translate(0,' + height + ')'}
             scale={xTrans} orient='bottom' outerTickSize={0} innerTickSize={0}
-            tickPadding={5} label='Students' width={width} height={height}
+            tickPadding={5} label='Grades' width={width} height={height}
             margin={margin} />
           <Axis className='axis' scale={yTrans} orient='left'
-            outerTickSize={0} innerTickSize={0} tickPadding={5} label='Grades'
+            outerTickSize={0} innerTickSize={0} tickPadding={5} label='Students'
             width={width} height={height} margin={margin} />
           {/* the curve */}
           <path className='stroke' d={lineFunc(data)} />

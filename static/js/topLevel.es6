@@ -29,27 +29,30 @@ class TopLevelApp extends React.Component {
     // filter out empty string from further calculations
     let filteredValues = this.state.values.filter((elem) => elem != '')
     let numInputs = filteredValues.size
-    console.log(numInputs)
+    
     numInputs = numInputs == 0 ? 1 : numInputs
     filteredValues = numInputs == 0 ? List([80]) : filteredValues
     
-    
-    // reduce to an array of averages up to this point
-    let gradesUpToDate = data.map((elem) => {
-      return elem.slice(0, numInputs)
-        .reduce((acc, grade, index) => { return acc + grade * .01 * weights[index] }, 0)
-    })
-    
-    // get student's current grade average
-    let gradeInput = filteredValues.reduce((acc, elem, index) => {
-      return acc + parseInt(elem) * .01 * weights[index]
+    // the sum of weights up to this point
+    let weightsUpToDate = weights.slice(0, numInputs).reduce((acc, elem) => {
+      return acc + elem
     }, 0)
-    console.log(gradeInput)
+    
+    // reduce to an array of weighted averages up to this point
+    let gradesUpToDate = data.map((elem) => {
+      return elem.slice(0, numInputs).reduce((acc, grade, index) => {
+        return acc + grade * weights[index]
+      }, 0) / weightsUpToDate
+    }) 
+    
+    // get student's current weighted grade average
+    let gradeInput = filteredValues.reduce((acc, elem, index) => {
+      return acc + parseInt(elem) * weights[index]
+    }, 0) / weightsUpToDate
 
     let inputs = this.state.values.map((elem) =>
       elem == '' ? 0 : parseInt(elem)
     ).toArray()
-    console.log(inputs)
     if(numInputs == 0) {inputs[0] = 80}
 
 
@@ -66,9 +69,9 @@ class TopLevelApp extends React.Component {
       <HighlightedGraph width={width/2} height={height/2} margin={margin}
         grades={finalGrades} interp='basis' input={83} />
       <Arcs width={width/2} height={height/2} margin={margin} weights={weights}
-        inputs={inputs} />
+        inputs={inputs} weightedGrade={gradeInput} />
       <Arcs width={width/2} height={height/2} margin={margin} weights={weights}
-        inputs={inputs.map(() => 83)} />
+        inputs={inputs.map(() => 83)} weightedGrade={83} />
       <TrendPlot width={width/2} height={height/2} margin={margin} data={data} />
       <div>General Trends in Grades per Assignment</div>
     </div>
