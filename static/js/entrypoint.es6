@@ -1,8 +1,8 @@
-import normalGrades from './normalized_data.json'
-import './viz.css'
-import TopLevelApp from './topLevel.es6'
 import ReactDOM from 'react-dom'
 import React from 'react'
+import normalGrades from './normalized_data.json'
+import './viz.css'
+import TopLevelApp from './components/topLevel.es6'
 
 // define viewport
 const margin = {top: 20, right: 20, bottom: 30, left: 50}

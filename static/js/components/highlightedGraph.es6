@@ -1,20 +1,18 @@
-import React from 'react'
+import React, {PropTypes} from 'react'
 import d3 from 'd3'
-import Axis from './reactifyD3/axis.es6'
 import shortid from 'shortid'
+import Axis from './D3Controlled/axis.es6'
+import GradeCircles from './gradeCircles.es6'
 
 class HighlightedGraph extends React.Component {
   static propTypes = {
-    width: React.PropTypes.number,
-    height: React.PropTypes.number,
-    margin: React.PropTypes.object,
-    data: React.PropTypes.array,
-    interp: React.PropTypes.oneOfType([
-      React.PropTypes.string,
-      React.PropTypes.function
-    ]),
-    input: React.PropTypes.number,
-    clipId: React.PropTypes.string
+    width: PropTypes.number,
+    height: PropTypes.number,
+    margin: PropTypes.object,
+    data: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.number)),
+    interp: PropTypes.oneOfType([PropTypes.string, PropTypes.function]),
+    input: PropTypes.number,
+    clipId: PropTypes.string
   }
   static defaultProps = {clipId: shortid.generate()}
   render () {
@@ -88,6 +86,9 @@ class HighlightedGraph extends React.Component {
     const bucketWidth = xTrans(data[currBucketInd].dx)
     const curveRightX = xTrans(data[currBucketInd].x)
 
+    const gradeCircleProps = 
+      {width, height, margin, leftPercent, currPercent, rightPercent}
+
     return <div className='performanceContainer'>
         <svg width={width + margin.left + margin.right}
         height={height + margin.top + margin.bottom}>
@@ -95,7 +96,8 @@ class HighlightedGraph extends React.Component {
           {/* define clipping path, impossible to render area
             as designed without */}
           <clipPath id={clipId}>
-            <rect x={curveLeftX} y={0} width={curveRightX - curveLeftX} height={height} />
+            <rect x={curveLeftX} y={0} width={curveRightX - curveLeftX}
+              height={height} strokeDasharray='5,5' />
           </clipPath>
         </defs>
         <g transform={'translate(' + margin.left + ',' + margin.top + ')'}>
@@ -114,18 +116,8 @@ class HighlightedGraph extends React.Component {
            clipPath={'url(#' + clipId + ')'} />
         </g>
       </svg>
-      <svg className='circlesContainer' width={width + margin.left + margin.right}
-        height={height + margin.top + margin.bottom}>
-        <g transform={'translate(' + margin.left + ',' + margin.top + ')'}>
-          {/* 3 circles */}
-          <circle className='fill' cy={height/2} cx={height/2*0.01*leftPercent} r={height/2 * 0.01 * leftPercent} />
-          <text className='highlightText' y={height + margin.bottom} x={height/2*0.01*leftPercent}>{leftPercent}</text>
-          <circle className='fill' cy={height/2} cx={height/2*0.01*(leftPercent*2+currPercent)} r={height/2*0.01*currPercent} />
-          <text className='highlightText' y={height + margin.bottom} x={height/2*0.01*(leftPercent*2+currPercent)}>{currPercent}</text>
-          <circle className='fill' cy={height/2} cx={height/2*0.01*(leftPercent*2+currPercent*2+rightPercent)} r={height/2*0.01*rightPercent} />
-          <text className='highlightText' y={height + margin.bottom} x={height/2*0.01*(leftPercent*2+currPercent*2+rightPercent)}>{rightPercent}</text>
-        </g>
-      </svg>
+      {/* draw the three circles underneath */}
+      <GradeCircles {...gradeCircleProps} />
     </div>
   }
 }

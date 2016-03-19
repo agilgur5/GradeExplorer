@@ -28,6 +28,9 @@ body {
   display: block;
   float: left;
 }
+.backgroundArc {
+  fill: #DDD;
+}
 .trendsContainer {
   clear: both;
   display: block;
@@ -36,6 +39,4 @@ body {
 .axisLabel {
 
 }
-.backgroundArc {
-  fill: #DDD;
-}
+

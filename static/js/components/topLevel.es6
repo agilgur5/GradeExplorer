@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {PropTypes} from 'react'
 import HighlightedGraph from './highlightedGraph.es6'
 import Arcs from './arcs.es6'
 import TrendPlot from './trendPlot.es6'
@@ -6,11 +6,11 @@ import {List} from 'immutable'
 
 class TopLevelApp extends React.Component {
   static propTypes = {
-    width: React.PropTypes.number,
-    height: React.PropTypes.number,
-    margin: React.PropTypes.object,
-    data: React.PropTypes.array,
-    weights: React.PropTypes.array
+    width: PropTypes.number,
+    height: PropTypes.number,
+    margin: PropTypes.object,
+    data: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.number)),
+    weights: PropTypes.arrayOf(PropTypes.number)
   }
   state = {
     values: List(this.props.data[0].map(() => '')) // initial array
@@ -23,7 +23,9 @@ class TopLevelApp extends React.Component {
 
     // reduce to an array of final grades
     let finalGrades = data.map((elem,) => {
-      return elem.reduce((acc, grade, index) => { return acc + grade * .01 * weights[index] }, 0)
+      return elem.reduce((acc, grade, index) => { 
+        return acc + grade * .01 * weights[index]
+      }, 0)
     })
 
     // filter out empty string from further calculations
@@ -46,9 +48,9 @@ class TopLevelApp extends React.Component {
     }) 
     
     // get student's current weighted grade average
-    let gradeInput = filteredValues.reduce((acc, elem, index) => {
+    let gradeInput = Math.round(filteredValues.reduce((acc, elem, index) => {
       return acc + parseInt(elem) * weights[index]
-    }, 0) / weightsUpToDate
+    }, 0) / weightsUpToDate)
 
     let inputs = this.state.values.map((elem) =>
       elem == '' ? 0 : parseInt(elem)
@@ -72,7 +74,8 @@ class TopLevelApp extends React.Component {
         inputs={inputs} weightedGrade={gradeInput} />
       <Arcs width={width/2} height={height/2} margin={margin} weights={weights}
         inputs={inputs.map(() => 83)} weightedGrade={83} />
-      <TrendPlot width={width/2} height={height/2} margin={margin} data={data} />
+      <TrendPlot width={width/2} height={height/2} margin={margin}
+        data={data} />
       <div>General Trends in Grades per Assignment</div>
     </div>
   }

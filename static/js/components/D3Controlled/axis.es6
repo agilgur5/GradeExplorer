@@ -20,7 +20,8 @@ class Axis extends React.Component {
     d3.select(node).call(axis)
   }
   render() {
-    const {className, transform, orient, label, width, height, margin} = this.props
+    const {className, transform, orient, label,
+      width, height, margin} = this.props
     
     return <g ref='axis' className={className}
       transform={transform}>
