@@ -1,5 +1,5 @@
 .vagrant/
-
+*.p
 
 # Created by https://www.gitignore.io/api/node,sass,sublimetext,vim,emacs,windows,linux,osx
 
@@ -167,3 +167,4 @@ Icon
 Network Trash Folder
 Temporary Items
 .apdisk
+

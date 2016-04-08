@@ -1,0 +1,10 @@
+version: '2'
+
+services:
+  predictor:
+    build: .
+    container_name: predictor
+    volumes:
+      - ./:/code
+    command: bash
+
