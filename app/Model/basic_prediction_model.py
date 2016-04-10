@@ -73,7 +73,11 @@ def predictGrades(scores, params_file):
 	s = sum(letter_grade_prob.values())
 	sorted_grade_prob = sorted(np.array(letter_grade_prob.values())/s)[::-1]
 	sorted_letter_grade = [letter_grade_prob.keys()[sort_index[i]] for i in range(len(sort_index))]
-	return sorted_letter_grade, sorted_grade_prob
+	grade_dict = {}
+	for s,sg in enumerate(sorted_letter_grade):
+		grade_dict[sg] = sorted_grade_prob[s]
+	return grade_dict
+	#return sorted_letter_grade, sorted_grade_prob
 
 
 if __name__ == "__main__":
@@ -86,8 +90,10 @@ if __name__ == "__main__":
 	scores = args.grades
 	params_file = 'params'
 
-	letter_grade, grade_prob = predictGrades(scores, params_file)
-	print letter_grade, grade_prob
+	grade_dict = predictGrades(scores, params_file)
+	print grade_dict
+	#slg,sgp = predictGrades(scores,params_file)
+	#print slg,sgp
 	
 
 
