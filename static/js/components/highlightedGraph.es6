@@ -90,8 +90,8 @@ class HighlightedGraph extends React.Component {
       {width, height, margin, leftPercent, currPercent, rightPercent}
 
     return <div className='performanceContainer'>
-        <svg width={width + margin.left + margin.right}
-        height={height + margin.top + margin.bottom}>
+        <svg viewBox={'0 0 ' + (width + margin.left + margin.right) +
+          ' ' + (height + margin.top + margin.bottom)}>
         <defs>
           {/* define clipping path, impossible to render area
             as designed without */}

@@ -1,5 +1,40 @@
-body {
-  font: 10px sans-serif;
+html, body {
+  width: 100%;
+  height: 100%;
+  font: 15px sans-serif;
+}
+#react_body {
+  width: 100%;
+  height: 100%;
+}
+#topInput {
+  width: 100%;
+  position: fixed;
+  top: 0px;
+}
+#topInputText {
+  text-align: center;
+  font-size: 25px;
+  font-weight: bold;
+}
+#inputContainer {
+  text-align: center;
+}
+.inputContainers {
+  width: 35px;
+  display: inline-block;
+  margin: 5px 10px 5px 10px;
+}
+.inputBoxes {
+  width: 25px;
+}
+.inputBoxes:disabled {
+  background-color: #DDDDDD;
+}
+#belowViz {
+  margin: auto;
+  margin-top: 120px;
+  width: 80%;
 }
 .axis path,
 .axis line {
@@ -13,28 +48,57 @@ body {
   stroke-width: 1.5px;
 }
 .fill {
+  background-color: #6EABEE;
   fill: #6EABEE;
+  color: #FFFFFF;
 }
 .highlightText {
   fill: #66A4E6
 }
-.performanceContainer {
+.leftRightViz {
   float: left;
+  width: 480px;
+}
+.leftRightTitle {
+  font-size: 25px;
+  text-align: center;
+}
+.leftRightSub {
+  font-size: 17px;
+  color: #AAAAAA;
+  text-align: center;
+  width: 50%;
+  margin: auto;
+  margin-top: 5px;
+}
+.underline {
+  text-decoration: underline;
 }
 .circlesContainer {
-  display: block;
+  margin-top: 20px;
+}
+.circlesSVG {
+  margin-top: 10px;
 }
 .arcsContainer {
   display: block;
-  float: left;
 }
 .backgroundArc {
-  fill: #DDD;
+  fill: #DDDDDD;
 }
-.trendsContainer {
-  clear: both;
-  display: block;
-  /*margin: auto;*/
+#trendsContainer {
+  text-align: center;
+  padding-right: 5%;
+  display: inline-block;
+  margin: auto;
+  margin-top: 30px;
+  width: 100%;
+}
+#trendsTitle {
+  font-size: 25px;
+  color: #AAAAAA;
+  width: 50%;
+  margin: auto;
 }
 .axisLabel {
 

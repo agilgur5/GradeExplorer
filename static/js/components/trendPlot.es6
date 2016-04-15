@@ -23,9 +23,9 @@ class TrendPlot extends React.Component {
     const lineFunc = d3.svg.line()
       .y((d) => yTrans(d))
 
-    return <svg className='trendsContainer'
-      width={width + margin.left + margin.right}
-      height={height + margin.top + margin.bottom}>
+    let assignIndex = 0
+
+    return <svg viewBox={'0 0 ' + width*2 + ' ' + height*2}>
       <g transform={'translate(' + margin.left + ',' + margin.top + ')'}>
         {/* plot axes */}
         <Axis className='axis' transform={'translate(0,' + height + ')'}
@@ -38,7 +38,11 @@ class TrendPlot extends React.Component {
         {/* the lines */}
         {data.map((student, index) =>
           <path key={index} className='stroke' 
-            d={lineFunc.x((d) => xTrans(student.indexOf(d)+1))(student)} />
+            d={lineFunc.x((d) => {
+              assignIndex++
+              if (assignIndex >= data[0].length + 1) { assignIndex = 1 }
+              return xTrans(assignIndex)
+            })(student)} />
         )}
       </g>
     </svg>

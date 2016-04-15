@@ -14,6 +14,8 @@ class Arcs extends React.Component {
     const {width, height, margin, weights, inputs, weightedGrade} = this.props
 
     // consts
+    const totalWidth = width + margin.left + margin.right
+    const totalHeight = height + margin.top + margin.bottom
     const padAngle = 0.04 // padding between arcs
     const innerRadius = 50 // where arc radius begins
     const outerRadius = innerRadius * 2 // where arc radius ends
@@ -31,11 +33,9 @@ class Arcs extends React.Component {
       return weight
     })
 
-    return <svg className='arcsContainer'
-      width={width + margin.left + margin.right}
-      height={height + margin.top + margin.bottom}>
-      <g transform={'translate(' + (margin.left + outerRadius * 1.5) + ',' +
-        (margin.top + outerRadius * 1.25) + ')'}>
+    return <svg className='arcsContainer' viewBox={'0 0 ' +
+        totalWidth + ' ' + totalHeight}>
+      <g transform={'translate(' + totalWidth/2 + ',' + totalHeight/2 + ')'}>
         {weightArcs.map((weight, index) =>
           <g key={index}>
             {/* background arcs */}
