@@ -52,8 +52,11 @@ html, body {
   fill: #6EABEE;
   color: #FFFFFF;
 }
-.highlightText {
-  fill: #66A4E6
+.highlight {
+  fill: #0A64C4;
+  stroke: #0A64C4;
+  color: #0A64C4;
+  fill-opacity: 0.4;
 }
 .leftRightViz {
   float: left;
