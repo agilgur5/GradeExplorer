@@ -6,12 +6,15 @@ class Arcs extends React.Component {
     width: PropTypes.number,
     height: PropTypes.number,
     margin: PropTypes.object,
-    weights: PropTypes.arrayOf(React.PropTypes.number),
-    inputs: PropTypes.arrayOf(React.PropTypes.number),
-    weightedGrade: PropTypes.number
+    weights: PropTypes.arrayOf(PropTypes.number),
+    inputs: PropTypes.arrayOf(PropTypes.number),
+    weightedGrade: PropTypes.number,
+    names: PropTypes.arrayOf(PropTypes.string),
+    totalPoints: PropTypes.arrayOf(PropTypes.string),
   }
   render () {
-    const {width, height, margin, weights, inputs, weightedGrade} = this.props
+    const {width, height, margin, weights, inputs, weightedGrade,
+      names, totalPoints} = this.props
 
     // consts
     const totalWidth = width + margin.left + margin.right
@@ -32,6 +35,7 @@ class Arcs extends React.Component {
       weight.endAngle -= padAngle
       return weight
     })
+    const midAngle = (weight) => weight.startAngle + (weight.endAngle - weight.startAngle)/2
 
     return <svg className='arcsContainer' viewBox={'0 0 ' +
         totalWidth + ' ' + totalHeight}>
@@ -49,11 +53,19 @@ class Arcs extends React.Component {
                 .endAngle(weight.endAngle -
                   ((weight.endAngle - weight.startAngle) * .01 *
                     (100 - inputs[index])))()} />}
+            {/* line from arc to label */}
+            <path className='arcLines' 
+              d={'M' + arcTrans.centroid(weight).join(', ') +
+                'L' + arcLabelTrans.centroid(weight).join(', ') +
+                'L' + (midAngle(weight) < Math.PI ? width/4 : -width/4) +
+                ', ' + arcLabelTrans.centroid(weight)[1]} />
             {/* arc labels */}
             <text className='fill' fontSize={innerRadius / 4}
-              textAnchor='middle' x={arcLabelTrans.centroid(weight)[0]}
-              y={arcLabelTrans.centroid(weight)[1]}>
-              {index}
+              textAnchor={midAngle(weight) < Math.PI ? 'start' : 'end'}
+              x={(midAngle(weight) < Math.PI ? width/4 + 4 : -width/4 - 4)}
+              y={arcLabelTrans.centroid(weight)[1] + 5}>
+              {names[index] + ' - ' +
+                inputs[index] + ' / ' + totalPoints[index]}
             </text>
           </g>
         )}

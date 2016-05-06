@@ -47,10 +47,17 @@ html, body {
   stroke: #6EABEE;
   stroke-width: 1.5px;
 }
+.arcLines {
+  fill: none;
+  stroke: black;
+}
 .fill {
   background-color: #6EABEE;
   fill: #6EABEE;
   color: #FFFFFF;
+}
+.fillText {
+  color: #6EABEE;
 }
 .highlight {
   fill: #0A64C4;

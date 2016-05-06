@@ -12,83 +12,45 @@ class TopLevelApp extends React.Component {
     margin: PropTypes.object,
     data: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.number)),
     weights: PropTypes.arrayOf(PropTypes.number),
-    names: PropTypes.arrayOf(PropTypes.string)
+    names: PropTypes.arrayOf(PropTypes.string),
+    totalPoints: PropTypes.arrayOf(PropTypes.string)
   }
   state = {
-    values: List(this.props.data[0].map(() => '')), // initial array
+    values: List(this.props.weights.map(() => '')), // initial array
     prediction: 83 // default prediction
   }
   handleInputChange (ev, index) {
     let newVals = this.state.values.set(index, ev.target.value)
+    // create arguments to pass to get request
     let urlArgs = newVals.filter((elem) => elem != '')
       .reduce((acc, elem, index) => acc + '&scores=' + elem, '')
     urlArgs = urlArgs.slice(1, urlArgs.length) // remove first '&'
-    console.log(urlArgs)
-    fetch('/getPrediction?' + urlArgs)
-      .then((response) => {
-        if (response.status >= 400) {
-          throw new Error("Bad response from server");
+    fetch('/getPrediction?' + urlArgs).then((response) => {
+      if (response.status >= 400) {
+        throw new Error('Bad response from server')
+      }
+      return response.json()
+    }).then((data) => {
+      let letterToGrade = {
+        'A+': 97, 'A': 95, 'A-': 92, 'B+': 87, 'B': 85, 'B-': 82,
+        'C+': 77, 'C': 75, 'C-': 72, 'D+': 67, 'D': 65, 'D-': 62, 'F': 55
+      }
+      // starting values
+      let max = data['A+']
+      let pred = 97
+      // iterate over all keys to get max confidence letter grade
+      Object.keys(data).forEach((key) => {
+        if (data[key] > max) {
+          max = data[key]
+          pred = letterToGrade[key]
         }
-        return response.json()
       })
-      .then((data) => {
-        console.log(data)
-        let max = data['A+']
-        let pred = 97
-        if (data['A'] > max) {
-          max = data['A']
-          pred = 95
-        }
-        if (data['A-'] > max) {
-          max = data['A-']
-          pred = 92
-        }
-        if (data['B+'] > max) {
-          max = data['B+']
-          pred = 87
-        }
-        if (data['B'] > max) {
-          max = data['B']
-          pred = 85
-        }
-        if (data['B-'] > max) {
-          max = data['B-']
-          pred = 82
-        }
-        if (data['C+'] > max) {
-          max = data['C+']
-          pred = 77
-        }
-        if (data['C'] > max) {
-          max = data['C']
-          pred = 75
-        }
-        if (data['C-'] > max) {
-          max = data['C-']
-          pred = 72
-        }
-        if (data['D+'] > max) {
-          max = data['D+']
-          pred = 67
-        }
-        if (data['D'] > max) {
-          max = data['D']
-          pred = 65
-        }
-        if (data['D-'] > max) {
-          max = data['D-']
-          pred = 62
-        }
-        if (data['F'] > max) {
-          max = data['F']
-          pred = 55
-        }
-        this.setState({prediction: pred})
-      })
+      this.setState({prediction: pred})
+    })
     this.setState({values: newVals})
   }
   render () {
-    let {margin, data, weights, names} = this.props
+    let {margin, data, weights, names, totalPoints} = this.props
     let width = 960
     let height = 500
     let {values, prediction} = this.state
@@ -136,10 +98,15 @@ class TopLevelApp extends React.Component {
         <div id='inputContainer'>
           {names.map((name, index) =>
             <div key={index} className='inputContainers'>
-              <span className='inputLabels'>{name}</span>
+              <span className='inputLabels'>
+                {/* any part of the name greater than 5 chars gets split */}
+                {name.split(' ').map((split) =>
+                  split.match(/.{1,5}/g).join('- ')).join(' ')}
+              </span>
               <input type='text' value={values.get(index)}
                 disabled={index > numInputs} className='inputBoxes'
                 onChange={(ev) => this.handleInputChange(ev, index)} />
+                <span className='inputLabels'>{'/ ' + totalPoints[index]}</span>
             </div>
           )}
         </div>
@@ -148,10 +115,10 @@ class TopLevelApp extends React.Component {
         <div className='leftRightViz'>
           <div className='leftRightTitle'>Your Current Status</div>
           <div className='leftRightSub'>
-            Here's how you're performing right now
+            Here's your current weighted average
           </div>
           <Arcs width={width/2} height={height/2} margin={margin} weights={weights}
-            inputs={inputs} weightedGrade={gradeInput} />
+            inputs={inputs} weightedGrade={gradeInput} names={names} totalPoints={totalPoints} />
           <div className='leftRightSub'>
             Here's your performance relative to the past data up to <span
               className='underline'>{names[numInputs]}</span>
@@ -164,8 +131,10 @@ class TopLevelApp extends React.Component {
           <div className='leftRightSub'>
             Here's the final grade students in your position typically get
           </div>
-          <Arcs width={width/2} height={height/2} margin={margin} weights={weights}
-            inputs={inputs.map(() => prediction)} weightedGrade={prediction} />
+          <Arcs width={width/2} height={height/2} margin={margin} weights={[100]}
+            inputs={[prediction]} weightedGrade={prediction}
+            names={[names[names.length - 1]]}
+            totalPoints={[totalPoints[totalPoints.length - 1]]}/>
           <div className='leftRightSub'>
             Here's how we predict you would perform relative to past data at
             the end of the semester
@@ -175,10 +144,11 @@ class TopLevelApp extends React.Component {
         </div>
         <div id='trendsContainer'>
           <div id='trendsTitle'>
-            Here's how students performed on the assignments overall
+            Here's the distribution of how students performed on the assignments overall
           </div>
           <TrendPlot width={width/2} height={height/2} margin={margin}
-            data={data} />
+            data={data} inputs={inputs.slice(0, numInputs)}
+            prediction={prediction} interp='basis' names={names} />
         </div>
       </div>
     </div>
