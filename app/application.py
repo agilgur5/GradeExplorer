@@ -1,6 +1,6 @@
 from flask import Flask, request, render_template, jsonify
 import os
-from Model import basic_prediction_model
+from Model import multiple_prediction_model
 
 app = Flask(__name__)
 # not actually a secret since no need for authentication
@@ -14,8 +14,8 @@ def loadViz():
 # returns data that specifies what to place into the spec editor
 @app.route('/getPrediction', methods=['GET'])
 def getPrediction():
-  predictGrades = basic_prediction_model.predictGrades
-  return jsonify(predictGrades(request.args.getlist('scores'), 'Model/params'))
+  predictGrades = multiple_prediction_model.predictGrades
+  return jsonify(predictGrades(request.args.getlist('scores'), 'Model/params_all'))
 
 
 if __name__ == '__main__':
