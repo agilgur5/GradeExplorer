@@ -113,14 +113,15 @@ class TrendPlot extends React.Component {
             fillOpacity={area[1] / max} />
         )}
         {/* your scores + predicted overlayed on top of the distribution */}
-        <path className='highlight' d={inputAreaFunc(transInputAreas)}
+        <path className='highlight opaque' d={inputAreaFunc(transInputAreas)}
           fillOpacity='0.4' />
       </g>
       {/* legend */}
       <g transform={'translate(' + (width + margin.left + 20) +
         ',' + (margin.top + height/2 - 25) + ')'}>
         {/* you */}
-        <rect className='highlight' x={0} y={-20} width={20} height={20} />
+        <rect className='highlight opaque'
+          x={0} y={-20} width={20} height={20} />
         <text x={25} y={-5}>You</text>
         {/* distribution / other shades */}
         {areas.map((area, index) =>

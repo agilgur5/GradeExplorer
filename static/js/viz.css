@@ -63,7 +63,18 @@ html, body {
   fill: #0A64C4;
   stroke: #0A64C4;
   color: #0A64C4;
+}
+.lessOpaque {
+  fill-opacity: 0.5;
+  stroke-opacity: 0.5;
+}
+.opaque {
   fill-opacity: 0.4;
+  stroke-opacity: 0.4;
+}
+.moreOpaque {
+  fill-opacity: 0.2;
+  stroke-opacity: 0.2;
 }
 .leftRightViz {
   float: left;
@@ -95,6 +106,22 @@ html, body {
 }
 .backgroundArc {
   fill: #DDDDDD;
+}
+.confidenceTable {
+  float: left;
+  width: 64px;
+  position: relative;
+  top: 71px;
+  right: 100px;
+}
+.confidenceTitle {
+  font-size: 0.8em;
+  text-align: center;
+  color: #AAAAAA;
+}
+.confidenceScores {
+  font-size: 0.7em;
+  color: #6EABEE;
 }
 #trendsContainer {
   text-align: center;

@@ -12,9 +12,19 @@ class Arcs extends React.Component {
     names: PropTypes.arrayOf(PropTypes.string),
     totalPoints: PropTypes.arrayOf(PropTypes.string),
   }
+  state = {
+    selectedIndex: -1
+  }
+  selectArc = (_, index) => {
+    this.setState({selectedIndex: index})
+  }
+  unselect = () => {
+    this.setState({selectedIndex: -1})
+  }
   render () {
     const {width, height, margin, weights, inputs, weightedGrade,
       names, totalPoints} = this.props
+    const {selectedIndex} = this.state
 
     // consts
     const totalWidth = width + margin.left + margin.right
@@ -40,15 +50,21 @@ class Arcs extends React.Component {
     return <svg className='arcsContainer' viewBox={'0 0 ' +
         totalWidth + ' ' + totalHeight}>
       <g transform={'translate(' + totalWidth/2 + ',' + totalHeight/2 + ')'}>
-        {weightArcs.map((weight, index) =>
-          <g key={index}>
+        {weightArcs.map((weight, index) => {
+          let middle = midAngle(weight)
+
+          return <g key={index} className={selectedIndex != -1 &&
+              selectedIndex != index ? 'lessOpaque' : ''}
+            onMouseEnter={(ev) => this.selectArc(ev, index)}
+            onMouseLeave={this.unselect}>
             {/* background arcs */}
             <path className='backgroundArc'
               d={arcTrans.startAngle(weight.startAngle)
                   .endAngle(weight.endAngle)()} />
             {/* weight arcs */}
-            {inputs[index] == 0 ? <path key={index} /> :
-            <path className='fill'
+            {inputs[index] == 0
+            ? <path key={index} />
+            : <path className='fill'
               d={arcTrans.startAngle(weight.startAngle)
                 .endAngle(weight.endAngle -
                   ((weight.endAngle - weight.startAngle) * .01 *
@@ -57,18 +73,31 @@ class Arcs extends React.Component {
             <path className='arcLines' 
               d={'M' + arcTrans.centroid(weight).join(', ') +
                 'L' + arcLabelTrans.centroid(weight).join(', ') +
-                'L' + (midAngle(weight) < Math.PI ? width/4 : -width/4) +
+                'L' + (middle < Math.PI ? width/4 : -width/4) +
                 ', ' + arcLabelTrans.centroid(weight)[1]} />
             {/* arc labels */}
-            <text className='fill' fontSize={innerRadius / 4}
-              textAnchor={midAngle(weight) < Math.PI ? 'start' : 'end'}
-              x={(midAngle(weight) < Math.PI ? width/4 + 4 : -width/4 - 4)}
+            <text className={'fill ' + (selectedIndex != -1 &&
+              selectedIndex != index &&
+              (index < selectedIndex + 3 && index > selectedIndex - 3)
+              ? 'moreOpaque' : '')}
+              fontSize={innerRadius / 4}
+              textAnchor={middle < Math.PI ? 'start' : 'end'}
+              x={middle < Math.PI ? width/4 + 4 : -width/4 - 4}
               y={arcLabelTrans.centroid(weight)[1] + 5}>
-              {names[index] + ' - ' +
-                inputs[index] + ' / ' + totalPoints[index]}
+              {/* if string > 25 chars, split into array of tspans */}
+              {(names[index] + ' - ' +
+                inputs[index] + ' / ' + totalPoints[index] + ' - ' +
+                weights[index] + '%')
+                  .split('').map((char, ind) =>
+                    ind != 0 && ind % 25 == 0 ?
+                      char + '`' : char).join('')
+                  .split('`').map((txt, ind) =>
+                    <tspan key={ind}
+                      x={middle < Math.PI ? width/4 + 4 : -width/4 - 4}
+                      dy={(1.2 * ind) + 'em'}>{txt}</tspan>)}
             </text>
           </g>
-        )}
+        })}
         <text className='fill' y={innerRadius / 4} x={0} 
           fontSize={innerTextSize} textAnchor='middle'>
           {weightedGrade + '%'}

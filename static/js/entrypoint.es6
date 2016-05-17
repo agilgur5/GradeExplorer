@@ -9,7 +9,7 @@ import TopLevelApp from './components/topLevel.es6'
 let props = {
   margin: {top: 20, right: 20, bottom: 30, left: 50},
   data: normalGrades.data,
-  weights: labels.weights,
+  weights: labels.weights.map((elem) => parseFloat(elem.toFixed(2))),
   names: labels.cols.map((elem) => elem[0]),
   totalPoints: labels.cols.map((elem) => elem[1]),
 }

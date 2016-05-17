@@ -13,11 +13,14 @@ class TopLevelApp extends React.Component {
     data: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.number)),
     weights: PropTypes.arrayOf(PropTypes.number),
     names: PropTypes.arrayOf(PropTypes.string),
-    totalPoints: PropTypes.arrayOf(PropTypes.string)
+    totalPoints: PropTypes.arrayOf(PropTypes.string),
   }
   state = {
     values: List(this.props.weights.map(() => '')), // initial array
-    prediction: 83 // default prediction
+    prediction: 82, // default prediction
+    confidences: {'A+': 0, 'A': 0, 'A-': 0, 'B+': 0, 'B': 0, 'B-': .10,
+      'C+': 0, 'C': 0, 'C-': 0, 'D+': 0, 'D': 0, 'D-': 0, 'F': 0},
+    showConfidences: false,
   }
   handleInputChange (ev, index) {
     let newVals = this.state.values.set(index, ev.target.value)
@@ -31,6 +34,7 @@ class TopLevelApp extends React.Component {
       }
       return response.json()
     }).then((data) => {
+      this.setState({confidences: data})
       let letterToGrade = {
         'A+': 97, 'A': 95, 'A-': 92, 'B+': 87, 'B': 85, 'B-': 82,
         'C+': 77, 'C': 75, 'C-': 72, 'D+': 67, 'D': 65, 'D-': 62, 'F': 55
@@ -53,7 +57,7 @@ class TopLevelApp extends React.Component {
     let {margin, data, weights, names, totalPoints} = this.props
     let width = 960
     let height = 500
-    let {values, prediction} = this.state
+    let {values, prediction, confidences, showConfidences} = this.state
 
     // reduce to an array of final grades
     let finalGrades = data.map((elem,) => {
@@ -117,8 +121,9 @@ class TopLevelApp extends React.Component {
           <div className='leftRightSub'>
             Here's your current weighted average
           </div>
-          <Arcs width={width/2} height={height/2} margin={margin} weights={weights}
-            inputs={inputs} weightedGrade={gradeInput} names={names} totalPoints={totalPoints} />
+          <Arcs width={width/2} height={height/2} margin={margin}
+            weights={weights} inputs={inputs} weightedGrade={gradeInput}
+            names={names} totalPoints={totalPoints} />
           <div className='leftRightSub'>
             Here's your performance relative to the past data up to <span
               className='underline'>{names[numInputs]}</span>
@@ -131,16 +136,23 @@ class TopLevelApp extends React.Component {
           <div className='leftRightSub'>
             Here's the final grade students in your position typically get
           </div>
-          <Arcs width={width/2} height={height/2} margin={margin} weights={[100]}
-            inputs={[prediction]} weightedGrade={prediction}
-            names={[names[names.length - 1]]}
-            totalPoints={[totalPoints[totalPoints.length - 1]]}/>
+          <Arcs width={width/2} height={height/2} margin={margin}
+            weights={[100]} inputs={[prediction]} weightedGrade={prediction}
+            names={['Predicted Final Grade']} totalPoints={['100']} />
           <div className='leftRightSub'>
             Here's how we predict you would perform relative to past data at
             the end of the semester
           </div>
           <HighlightedGraph width={width/2} height={height/2} margin={margin}
             grades={finalGrades} interp='basis' input={prediction} />
+        </div>
+        <div className='confidenceTable'>
+          <div className='confidenceTitle'>Here's how confident we are:</div>
+          {Object.keys(confidences).map((key) =>
+            <div key={key} className='confidenceScores'>
+              {key + ': ' + Math.round(confidences[key] * 100) + '%'}
+            </div>
+          )}
         </div>
         <div id='trendsContainer'>
           <div id='trendsTitle'>

@@ -40,17 +40,29 @@ class GradeCircles extends React.Component {
             textAnchor='middle'>
             {leftPercent + '%'}
           </text>
+          <text className='fill' y={heightToBottom + 15} x={leftRadius}
+            textAnchor='middle'>
+            Worse
+          </text>
           <circle className='highlight'
             cy={heightDiv2} cx={leftRadius * 2 + currRadius} r={currRadius} />
           <text className='highlight' y={heightToBottom}
             x={leftRadius * 2 + currRadius} textAnchor='middle'>
             {currPercent + '%'}
           </text>
+          <text className='highlight' y={heightToBottom + 15}
+            x={leftRadius * 2 + currRadius} textAnchor='middle'>
+            Same
+          </text>
           <circle className='fill' cy={heightDiv2}
             cx={(leftRadius + currRadius) * 2 + rightRadius} r={rightRadius} />
           <text className='fill' y={heightToBottom}
             x={(leftRadius + currRadius) * 2 + rightRadius} textAnchor='middle'>
             {rightPercent + '%'}
+          </text>
+          <text className='fill' y={heightToBottom + 15}
+            x={(leftRadius + currRadius) * 2 + rightRadius} textAnchor='middle'>
+            Better
           </text>
         </g>
       </svg>
